@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://csgm5nhqyw1p5"]
+
+[ext_resource type="Script" uid="uid://d3b5co20xlv8" path="res://Entities/Characters/Player/player.gd" id="1_m5olb"]
+[ext_resource type="Script" uid="uid://bnrq0w04kderp" path="res://Entities/Characters/Components/health_component.gd" id="2_aur4w"]
+[ext_resource type="Script" uid="uid://dwal8h8emb0l5" path="res://Entities/Characters/Components/hitbox_component.gd" id="3_icjhs"]
+[ext_resource type="PackedScene" uid="uid://fdoqsrf0o6xv" path="res://Entities/Characters/Player/sword.tscn" id="4_xthmb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_asgho"]
+size = Vector2(16, 19)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_icjhs"]
+size = Vector2(16, 19)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_m5olb")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -19.0
+offset_right = 8.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9.5)
+shape = SubResource("RectangleShape2D_asgho")
+
+[node name="Sword" parent="." instance=ExtResource("4_xthmb")]
+position = Vector2(0, -9)
+
+[node name="HealthComponent" type="Node2D" parent="."]
+script = ExtResource("2_aur4w")
+metadata/_custom_type_script = "uid://bnrq0w04kderp"
+
+[node name="HitboxComponent" type="Area2D" parent="."]
+script = ExtResource("3_icjhs")
+metadata/_custom_type_script = "uid://dwal8h8emb0l5"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+position = Vector2(0, -9.5)
+shape = SubResource("RectangleShape2D_icjhs")
+
+[node name="JumpHoldTimer" type="Timer" parent="."]
+process_callback = 0
+
+[connection signal="timeout" from="JumpHoldTimer" to="." method="_on_jump_hold_timer_timeout"]

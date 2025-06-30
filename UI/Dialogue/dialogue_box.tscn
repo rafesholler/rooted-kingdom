@@ -1,0 +1,38 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1igwfbx5te80"]
+
+[ext_resource type="Script" uid="uid://choaxh5e5vk8r" path="res://UI/Dialogue/dialogue_box.gd" id="1_bsyxh"]
+
+[node name="DialogueBox" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_bsyxh")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 20.0
+offset_bottom = -100.0
+grow_horizontal = 2
+
+[node name="DialogueBoxMain" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/DialogueBoxMain"]
+layout_mode = 2
+bbcode_enabled = true
+scroll_active = false
+scroll_following = true
+
+[node name="PlayerOptions" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 1.5
+
+[node name="DialogueChain" type="Node" parent="."]

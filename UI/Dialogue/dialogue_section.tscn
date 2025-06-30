@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://yvgil71cebf4"]
+
+[ext_resource type="Script" uid="uid://dmowr0mnii7rt" path="res://UI/Dialogue/dialogue_section.gd" id="1_wnmri"]
+
+[node name="DialogueSection" type="Node"]
+script = ExtResource("1_wnmri")
