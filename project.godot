@@ -15,12 +15,20 @@ run/main_scene="uid://dbsbrg625fvoq"
 config/features=PackedStringArray("4.4", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PlayerUpdate="*res://Global/player_update.gd"
+
 [display]
 
 window/size/viewport_width=640
 window/size/viewport_height=360
 window/size/mode=3
 window/stretch/mode="canvas_items"
+
+[global_group]
+
+player="Identifies the player"
 
 [input]
 
@@ -55,3 +63,15 @@ attack={
 , Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":2,"pressure":0.0,"pressed":false,"script":null)
 ]
 }
+
+[layer_names]
+
+2d_physics/layer_1="Player"
+2d_physics/layer_2="Enemies"
+2d_physics/layer_3="Enivonment"
+2d_physics/layer_4="PlayerAttacks"
+2d_physics/layer_5="EnemyAttacks"
+
+[physics]
+
+2d/default_gravity=490.0

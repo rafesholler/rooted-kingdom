@@ -1,5 +1,5 @@
-extends Node2D
-class_name HealthComponent
+extends Node
+class_name Health
 
 signal damage_taken(old: float, new: float)
 signal killed

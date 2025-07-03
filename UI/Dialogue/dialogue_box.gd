@@ -18,12 +18,9 @@ func _process(delta: float) -> void:
 	if frame_count % 3 == 0 and textbox.visible_characters != -1:
 		textbox.visible_characters += 1
 	
-	#print(textbox.visible_ratio)
-	
 	if Input.is_action_just_pressed("interact"):
 		if textbox.visible_ratio < 1:
 			textbox.visible_ratio = 1
-			print(textbox.visible_characters)
 		else:
 			_get_next_text()
 

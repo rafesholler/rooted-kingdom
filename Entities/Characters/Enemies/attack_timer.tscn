@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dimowxowxmr1h"]
+
+[ext_resource type="Script" uid="uid://crkde56yvmxim" path="res://Entities/Characters/Enemies/attack_timer.gd" id="1_54hfn"]
+
+[node name="AttackTimer" type="Timer"]
+script = ExtResource("1_54hfn")
+Time = 0.0

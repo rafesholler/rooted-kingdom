@@ -1,12 +1,13 @@
-[gd_scene load_steps=7 format=3 uid="uid://dbsbrg625fvoq"]
+[gd_scene load_steps=8 format=3 uid="uid://dbsbrg625fvoq"]
 
-[ext_resource type="PackedScene" uid="uid://csgm5nhqyw1p5" path="res://Entities/Characters/Player/player.tscn" id="1_dbkhw"]
-[ext_resource type="Script" uid="uid://c4tw06p0l0dtl" path="res://area_2d.gd" id="2_jb24s"]
-[ext_resource type="PackedScene" uid="uid://b1igwfbx5te80" path="res://UI/Dialogue/dialogue_box.tscn" id="3_gb0ol"]
-[ext_resource type="Script" uid="uid://dmowr0mnii7rt" path="res://UI/Dialogue/dialogue_section.gd" id="4_adhe1"]
+[ext_resource type="PackedScene" uid="uid://csgm5nhqyw1p5" path="res://Entities/Characters/Player/player.tscn" id="1_vt2yd"]
+[ext_resource type="Script" uid="uid://c4tw06p0l0dtl" path="res://area_2d.gd" id="2_xdpsd"]
+[ext_resource type="PackedScene" uid="uid://b1igwfbx5te80" path="res://UI/Dialogue/dialogue_box.tscn" id="3_6ii2q"]
+[ext_resource type="Script" uid="uid://dmowr0mnii7rt" path="res://UI/Dialogue/dialogue_section.gd" id="4_gql8c"]
+[ext_resource type="PackedScene" uid="uid://bym1wfkxeebb7" path="res://Entities/Characters/Enemies/Bandit/bandit.tscn" id="5_7aw3l"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_25807"]
-size = Vector2(608, 39)
+size = Vector2(608, 40)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dbkhw"]
 size = Vector2(305, 46)
@@ -15,21 +16,23 @@ size = Vector2(305, 46)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(-303, 48)
+collision_layer = 4
+collision_mask = 0
 
 [node name="ColorRect" type="ColorRect" parent="StaticBody2D"]
 offset_right = 610.0
 offset_bottom = 40.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(307, 20.5)
+position = Vector2(307, 20)
 shape = SubResource("RectangleShape2D_25807")
 
-[node name="Player" parent="." instance=ExtResource("1_dbkhw")]
+[node name="Player" parent="." instance=ExtResource("1_vt2yd")]
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 
 [node name="Area2D" type="Area2D" parent="."]
-script = ExtResource("2_jb24s")
+script = ExtResource("2_xdpsd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
 position = Vector2(153.5, 23)
@@ -37,33 +40,36 @@ shape = SubResource("RectangleShape2D_dbkhw")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Area2D"]
 
-[node name="DialogueBox" parent="Area2D/CanvasLayer" instance=ExtResource("3_gb0ol")]
+[node name="DialogueBox" parent="Area2D/CanvasLayer" instance=ExtResource("3_6ii2q")]
 visible = false
 
 [node name="DialogueSection" type="Node" parent="Area2D/CanvasLayer/DialogueBox/DialogueChain" index="0"]
-script = ExtResource("4_adhe1")
+script = ExtResource("4_gql8c")
 text = "test1"
 metadata/_custom_type_script = "uid://dmowr0mnii7rt"
 
 [node name="DialogueSection2" type="Node" parent="Area2D/CanvasLayer/DialogueBox/DialogueChain" index="1"]
-script = ExtResource("4_adhe1")
+script = ExtResource("4_gql8c")
 text = "test2"
 metadata/_custom_type_script = "uid://dmowr0mnii7rt"
 
 [node name="DialogueSection3" type="Node" parent="Area2D/CanvasLayer/DialogueBox/DialogueChain" index="2"]
-script = ExtResource("4_adhe1")
+script = ExtResource("4_gql8c")
 text = " test3 testtest3 testtest3 testtest3 testtest3 testtest3 test"
 metadata/_custom_type_script = "uid://dmowr0mnii7rt"
 
 [node name="DialogueSection4" type="Node" parent="Area2D/CanvasLayer/DialogueBox/DialogueChain" index="3"]
-script = ExtResource("4_adhe1")
+script = ExtResource("4_gql8c")
 text = "test4"
 metadata/_custom_type_script = "uid://dmowr0mnii7rt"
 
 [node name="DialogueSection5" type="Node" parent="Area2D/CanvasLayer/DialogueBox/DialogueChain" index="4"]
-script = ExtResource("4_adhe1")
+script = ExtResource("4_gql8c")
 text = "test5!!"
 metadata/_custom_type_script = "uid://dmowr0mnii7rt"
+
+[node name="Bandit" parent="." instance=ExtResource("5_7aw3l")]
+position = Vector2(230, 33)
 
 [connection signal="completed" from="Area2D/CanvasLayer/DialogueBox" to="Area2D" method="_on_dialogue_box_completed"]
 

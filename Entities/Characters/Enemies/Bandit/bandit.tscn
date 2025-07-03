@@ -1,0 +1,131 @@
+[gd_scene load_steps=16 format=3 uid="uid://bym1wfkxeebb7"]
+
+[ext_resource type="Script" uid="uid://bktwd851hlrtx" path="res://Entities/Characters/Enemies/Bandit/bandit.gd" id="1_0u0dy"]
+[ext_resource type="Script" uid="uid://dwal8h8emb0l5" path="res://Entities/Characters/Components/hitbox.gd" id="2_gjson"]
+[ext_resource type="Script" uid="uid://dpllasedhrjxg" path="res://Entities/Characters/Components/hurtbox.gd" id="3_3qd4a"]
+[ext_resource type="Script" uid="uid://crkde56yvmxim" path="res://Entities/Characters/Enemies/attack_timer.gd" id="4_ndw2g"]
+[ext_resource type="Script" uid="uid://c0k61driic6oo" path="res://Entities/Characters/Components/general_movement.gd" id="5_1kw4h"]
+[ext_resource type="Script" uid="uid://bnrq0w04kderp" path="res://Entities/Characters/Components/health.gd" id="6_2k74p"]
+[ext_resource type="Script" uid="uid://cmsjs4nqeha87" path="res://Entities/Characters/StateMachines/state_machine.gd" id="7_4io2o"]
+[ext_resource type="Script" uid="uid://db4pqmle6qba8" path="res://Entities/Characters/Enemies/Bandit/idle.gd" id="8_eutrc"]
+[ext_resource type="Script" uid="uid://dywbkbsiem0kh" path="res://Entities/Characters/Enemies/Bandit/chase.gd" id="9_733yt"]
+[ext_resource type="Script" uid="uid://crmwqpiapfa8d" path="res://Entities/Characters/Enemies/Bandit/attack.gd" id="10_owxny"]
+[ext_resource type="Script" uid="uid://dck84ftd3xxa0" path="res://Entities/Characters/Enemies/Bandit/kocked_back.gd" id="11_tm82q"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0u0dy"]
+size = Vector2(16, 22)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gjson"]
+size = Vector2(16, 22)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2k74p"]
+size = Vector2(16, 22)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ndw2g"]
+radius = 167.0
+
+[node name="Bandit" type="CharacterBody2D" node_paths=PackedStringArray("movement")]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_0u0dy")
+movement = NodePath("GeneralMovement")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -8.0
+offset_top = -22.0
+offset_right = 8.0
+color = Color(0.278431, 0.254902, 0.796078, 1)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_0u0dy")
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("6_2k74p")
+metadata/_custom_type_script = "uid://bnrq0w04kderp"
+
+[node name="GeneralMovement" type="Node2D" parent="." node_paths=PackedStringArray("body")]
+script = ExtResource("5_1kw4h")
+body = NodePath("..")
+metadata/_custom_type_script = "uid://c0k61driic6oo"
+
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_layer = 2
+collision_mask = 8
+script = ExtResource("2_gjson")
+health = NodePath("../Health")
+metadata/_custom_type_script = "uid://dwal8h8emb0l5"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_gjson")
+
+[node name="Hurtbox" type="Area2D" parent="." node_paths=PackedStringArray("knockback_origin")]
+collision_layer = 16
+script = ExtResource("3_3qd4a")
+knockback_origin = NodePath("..")
+metadata/_custom_type_script = "uid://dpllasedhrjxg"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hurtbox"]
+position = Vector2(0, -11)
+shape = SubResource("RectangleShape2D_2k74p")
+
+[node name="StateMachine" type="Node2D" parent="."]
+script = ExtResource("7_4io2o")
+metadata/_custom_type_script = "uid://cmsjs4nqeha87"
+
+[node name="Idle" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("8_eutrc")
+target = NodePath("../..")
+
+[node name="DetectionRange" type="Area2D" parent="StateMachine/Idle"]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StateMachine/Idle/DetectionRange"]
+shape = SubResource("CircleShape2D_ndw2g")
+debug_color = Color(0.94902, 0.188235, 0.317647, 0.0745098)
+
+[node name="Chase" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("9_733yt")
+target = NodePath("../..")
+
+[node name="AttackTimer" type="Timer" parent="StateMachine/Chase"]
+one_shot = true
+script = ExtResource("4_ndw2g")
+attack_mode = 1
+Floor = 1.5
+Ceiling = 3.5
+metadata/_custom_type_script = "uid://crkde56yvmxim"
+
+[node name="Attack" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("10_owxny")
+target = NodePath("../..")
+
+[node name="Hurtbox" type="Area2D" parent="StateMachine/Attack" node_paths=PackedStringArray("knockback_origin")]
+script = ExtResource("3_3qd4a")
+knockback_origin = NodePath("../../..")
+metadata/_custom_type_script = "uid://dpllasedhrjxg"
+
+[node name="Timer" type="Timer" parent="StateMachine/Attack"]
+one_shot = true
+
+[node name="KnockedBack" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("11_tm82q")
+target = NodePath("../..")
+
+[node name="Timer" type="Timer" parent="StateMachine/KnockedBack"]
+one_shot = true
+
+[node name="Label" type="Label" parent="."]
+offset_left = -21.0
+offset_top = -45.0
+offset_right = 19.0
+offset_bottom = -22.0
+
+[connection signal="damage_taken" from="Health" to="." method="_on_health_damage_taken"]
+[connection signal="knocked_back" from="Hitbox" to="." method="_on_hitbox_knocked_back"]
+[connection signal="body_entered" from="StateMachine/Idle/DetectionRange" to="StateMachine/Idle" method="_on_detection_range_body_entered"]
+[connection signal="body_exited" from="StateMachine/Idle/DetectionRange" to="StateMachine/Idle" method="_on_detection_range_body_exited"]
+[connection signal="timeout" from="StateMachine/Chase/AttackTimer" to="StateMachine/Chase" method="_on_attack_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Attack/Timer" to="StateMachine/Attack" method="_on_timer_timeout"]
+[connection signal="timeout" from="StateMachine/KnockedBack/Timer" to="StateMachine/Attack" method="_on_timer_timeout"]

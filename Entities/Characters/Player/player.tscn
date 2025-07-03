@@ -1,9 +1,15 @@
-[gd_scene load_steps=7 format=3 uid="uid://csgm5nhqyw1p5"]
+[gd_scene load_steps=14 format=3 uid="uid://csgm5nhqyw1p5"]
 
 [ext_resource type="Script" uid="uid://d3b5co20xlv8" path="res://Entities/Characters/Player/player.gd" id="1_m5olb"]
-[ext_resource type="Script" uid="uid://bnrq0w04kderp" path="res://Entities/Characters/Components/health_component.gd" id="2_aur4w"]
-[ext_resource type="Script" uid="uid://dwal8h8emb0l5" path="res://Entities/Characters/Components/hitbox_component.gd" id="3_icjhs"]
-[ext_resource type="PackedScene" uid="uid://fdoqsrf0o6xv" path="res://Entities/Characters/Player/sword.tscn" id="4_xthmb"]
+[ext_resource type="Script" uid="uid://bnrq0w04kderp" path="res://Entities/Characters/Components/health.gd" id="2_aur4w"]
+[ext_resource type="Script" uid="uid://dwal8h8emb0l5" path="res://Entities/Characters/Components/hitbox.gd" id="3_icjhs"]
+[ext_resource type="Script" uid="uid://cmsjs4nqeha87" path="res://Entities/Characters/StateMachines/state_machine.gd" id="5_oxkv7"]
+[ext_resource type="Script" uid="uid://cmuk7kli1fqv5" path="res://Entities/Characters/Player/idle.gd" id="6_oxkv7"]
+[ext_resource type="Script" uid="uid://cidbp8cf08126" path="res://Entities/Characters/Player/run.gd" id="7_guu5u"]
+[ext_resource type="Script" uid="uid://dbsbuwg5upxa8" path="res://Entities/Characters/Player/jump.gd" id="8_bagdn"]
+[ext_resource type="Script" uid="uid://byhkuoprm2j3v" path="res://Entities/Characters/Player/fall.gd" id="9_ms8xu"]
+[ext_resource type="Script" uid="uid://by4pjj85j41y1" path="res://Entities/Characters/Player/attack.gd" id="10_8cphf"]
+[ext_resource type="Script" uid="uid://dpllasedhrjxg" path="res://Entities/Characters/Components/hurtbox.gd" id="10_cag7h"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_asgho"]
 size = Vector2(16, 19)
@@ -11,8 +17,13 @@ size = Vector2(16, 19)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_icjhs"]
 size = Vector2(16, 19)
 
-[node name="Player" type="CharacterBody2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ms8xu"]
+size = Vector2(25, 13)
+
+[node name="Player" type="CharacterBody2D" groups=["player"]]
+collision_mask = 4
 script = ExtResource("1_m5olb")
+speed = 150
 
 [node name="ColorRect" type="ColorRect" parent="."]
 offset_left = -8.0
@@ -23,22 +34,69 @@ offset_right = 8.0
 position = Vector2(0, -9.5)
 shape = SubResource("RectangleShape2D_asgho")
 
-[node name="Sword" parent="." instance=ExtResource("4_xthmb")]
-position = Vector2(0, -9)
-
-[node name="HealthComponent" type="Node2D" parent="."]
+[node name="Health" type="Node" parent="."]
 script = ExtResource("2_aur4w")
 metadata/_custom_type_script = "uid://bnrq0w04kderp"
 
-[node name="HitboxComponent" type="Area2D" parent="."]
+[node name="Hitbox" type="Area2D" parent="." node_paths=PackedStringArray("health")]
+collision_mask = 18
 script = ExtResource("3_icjhs")
+health = NodePath("../Health")
 metadata/_custom_type_script = "uid://dwal8h8emb0l5"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="HitboxComponent"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hitbox"]
 position = Vector2(0, -9.5)
 shape = SubResource("RectangleShape2D_icjhs")
 
-[node name="JumpHoldTimer" type="Timer" parent="."]
-process_callback = 0
+[node name="StateMachine" type="Node2D" parent="."]
+script = ExtResource("5_oxkv7")
+metadata/_custom_type_script = "uid://cmsjs4nqeha87"
 
-[connection signal="timeout" from="JumpHoldTimer" to="." method="_on_jump_hold_timer_timeout"]
+[node name="Idle" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("6_oxkv7")
+target = NodePath("../..")
+
+[node name="Run" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("7_guu5u")
+target = NodePath("../..")
+
+[node name="Jump" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("8_bagdn")
+target = NodePath("../..")
+
+[node name="JumpHoldTimer" type="Timer" parent="StateMachine/Jump"]
+process_callback = 0
+one_shot = true
+
+[node name="Fall" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("9_ms8xu")
+target = NodePath("../..")
+
+[node name="Attack" type="Node2D" parent="StateMachine" node_paths=PackedStringArray("target")]
+script = ExtResource("10_8cphf")
+target = NodePath("../..")
+
+[node name="Timer" type="Timer" parent="StateMachine/Attack"]
+one_shot = true
+
+[node name="Hurtbox" type="Area2D" parent="StateMachine/Attack" node_paths=PackedStringArray("knockback_origin")]
+visible = false
+collision_layer = 8
+collision_mask = 2
+script = ExtResource("10_cag7h")
+knockback_origin = NodePath("../../..")
+metadata/_custom_type_script = "uid://dpllasedhrjxg"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StateMachine/Attack/Hurtbox"]
+position = Vector2(20.5, -9.5)
+shape = SubResource("RectangleShape2D_ms8xu")
+debug_color = Color(0.931738, 0.244175, 0.24516, 0.42)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -20.0
+offset_top = -42.0
+offset_right = 20.0
+offset_bottom = -19.0
+
+[connection signal="timeout" from="StateMachine/Jump/JumpHoldTimer" to="StateMachine/Jump" method="_on_jump_hold_timer_timeout"]
+[connection signal="timeout" from="StateMachine/Attack/Timer" to="StateMachine/Attack" method="_on_timer_timeout"]
